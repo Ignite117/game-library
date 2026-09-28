@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Коллекция видеоигр</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 Коллекция видеоигр</h1>
+            <nav id="user-nav">
+                <span id="user-info"></span>
+                <button onclick="showSection('my-games-section')">Моя коллекция</button>
+                <button onclick="showSection('statistics-section')">Статистика</button>
+                <button onclick="showSection('recommendations-section')">Рекомендации</button>
+                <button onclick="showSection('games-section')">Справочник игр</button>
+                <button onclick="logout()">Выход</button>
+            </nav>
+        </header>
+
+        <!-- Форма входа -->
+        <div id="login-section" class="card">
+            <h2>Вход</h2>
+            <div class="form-group">
+                <label for="login-username">Имя пользователя:</label>
+                <input type="text" id="login-username" placeholder="Введите имя пользователя">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Пароль:</label>
+                <input type="password" id="login-password" placeholder="Введите пароль">
+            </div>
+            <button class="btn" onclick="login()">Войти</button>
+            <p style="margin-top: 15px;">
+                Нет аккаунта? <a href="#" onclick="showRegister(); return false;">Зарегистрироваться</a>
+            </p>
+        </div>
+
+        <!-- Форма регистрации -->
+        <div id="register-section" class="card hidden">
+            <h2>Регистрация</h2>
+            <div class="form-group">
+                <label for="reg-username">Имя пользователя:</label>
+                <input type="text" id="reg-username" placeholder="Введите имя пользователя">
+            </div>
+            <div class="form-group">
+                <label for="reg-email">Email:</label>
+                <input type="email" id="reg-email" placeholder="Введите email">
+            </div>
+            <div class="form-group">
+                <label for="reg-password">Пароль:</label>
+                <input type="password" id="reg-password" placeholder="Введите пароль">
+            </div>
+            <button class="btn" onclick="register()">Зарегистрироваться</button>
+            <p style="margin-top: 15px;">
+                Уже есть аккаунт? <a href="#" onclick="showLogin(); return false;">Войти</a>
+            </p>
+        </div>
+
+        <!-- Основной контент (для авторизованных пользователей) -->
+        <div id="main-section" class="hidden">
+            <!-- Моя коллекция -->
+            <div id="my-games-section" class="section card">
+                <h2>Моя коллекция игр</h2>
+                <div id="my-games-container" class="games-grid"></div>
+            </div>
+
+            <!-- Статистика -->
+            <div id="statistics-section" class="section card hidden">
+                <h2>Статистика</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="total-games">0</h3>
+                        <p>Всего игр</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="total-hours">0</h3>
+                        <p>Часов наиграно</p>
+                    </div>
+                </div>
+                <div class="genre-stats">
+                    <h3 style="margin-bottom: 15px;">Статистика по жанрам:</h3>
+                    <div id="genre-stats"></div>
+                    <p style="margin-top: 15px;">
+                        <strong>Преобладающий жанр:</strong> 
+                        <span id="predominant-genre">Нет данных</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Рекомендации -->
+            <div id="recommendations-section" class="section card hidden">
+                <h2>Рекомендации для вас</h2>
+                <p>На основе вашей коллекции мы рекомендуем следующие игры:</p>
+                <div id="recommendations-container" class="games-grid"></div>
+            </div>
+
+            <!-- Справочник игр -->
+            <div id="games-section" class="section card hidden">
+                <h2>Справочник игр</h2>
+                <p>Выберите игры для добавления в вашу коллекцию:</p>
+                <div id="games-container" class="games-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования игры -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>Редактировать игру</h2>
+            <input type="hidden" id="edit-game-id">
+            <div class="form-group">
+                <label for="edit-hours">Часов наиграно:</label>
+                <input type="number" id="edit-hours" step="0.1" min="0">
+            </div>
+            <div class="form-group">
+                <label for="edit-status">Статус:</label>
+                <select id="edit-status">
+                    <option value="owned">В коллекции</option>
+                    <option value="playing">Играю</option>
+                    <option value="completed">Пройдено</option>
+                    <option value="wishlist">Хочу</option>
+                </select>
+            </div>
+            <button class="btn btn-success" onclick="saveGameChanges()">Сохранить</button>
+            <button class="btn btn-secondary" onclick="closeEditModal()">Отмена</button>
+        </div>
+    </div>
+
+    <script src="static/js/app.js"></script>
+</body>
+</html>
+
